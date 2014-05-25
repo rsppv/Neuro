@@ -9,26 +9,30 @@ namespace Entities
 
         public Population(int populationSize)
         {
-            var random = new Random();
             Individuals = new List<Individual>(populationSize);
+        }
+
+        public List<Individual> Initialize(Individual solution)
+        {
+            var random = new Random();
 
             foreach (var individual in Individuals)
             {
-                for (int i = 0; i < UPPER; i++)
+                for (int i = 0; i < 4; i++)
                 {
-                    for (int j = 0; j < UPPER; j++)
+                    for (int j = 0; j < 8; j++)
                     {
-                        individual.Genes[i,j].
+                        individual.Genes[i, j].Position = random.Next(1, individual.Genes[i,j].Type == 1 ? 2 : 4);
                     }
                 }
             }
+            return Individuals;
         }
 
-        public Population Select()
+
+        public void Evaluate()
         {
             throw new NotImplementedException();
         }
-
-        
     }
 }

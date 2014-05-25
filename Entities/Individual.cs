@@ -12,7 +12,12 @@ namespace Entities
             Genes = genes;
         }
 
-        public Individual Mutate(Individual individual)
+        public int Fitness()
+        {
+            return 0;
+        }
+
+        public Individual Mutate()
         {
             throw new NotImplementedException();
         }

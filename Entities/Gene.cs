@@ -1,9 +1,11 @@
-﻿namespace Entities
+﻿using System;
+
+namespace Entities
 {
   public class Gene
   {
-    int Type{ get; set; }
-    int Position{ get; set; }
+    public int Type { get; set; }
+    public int Position{ get; set; }
 
       public Gene (int type, int position)
       {
