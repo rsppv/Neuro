@@ -42,7 +42,12 @@
     <Compile Include="ANN\Layer.cs" />
     <Compile Include="ANN\Link.cs" />
     <Compile Include="ANN\Network.cs" />
-    <Compile Include="ANN\Nueron.cs" />
+    <Compile Include="ANN\Neuron.cs" />
+    <Compile Include="Game\Agent.cs" />
+    <Compile Include="Game\AgentEnvironment.cs" />
+    <Compile Include="Game\AgentEnvironmentObserver.cs" />
+    <Compile Include="Game\IAgent.cs" />
+    <Compile Include="Game\IObserver.cs" />
     <Compile Include="GA\Concrete\IndividualComparer.cs" />
     <Compile Include="GA\Concrete\TruncationSelection.cs" />
     <Compile Include="GA\GA.cs" />
