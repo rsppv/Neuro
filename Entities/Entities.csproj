@@ -39,14 +39,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GA.cs" />
-    <Compile Include="Gene.cs" />
-    <Compile Include="Individual.cs" />
-    <Compile Include="Neuron.cs" />
-    <Compile Include="Population.cs" />
+    <Compile Include="ANN\Layer.cs" />
+    <Compile Include="ANN\Link.cs" />
+    <Compile Include="ANN\Network.cs" />
+    <Compile Include="ANN\Nueron.cs" />
+    <Compile Include="GA\Concrete\IndividualComparer.cs" />
+    <Compile Include="GA\Concrete\TruncationSelection.cs" />
+    <Compile Include="GA\GA.cs" />
+    <Compile Include="GA\Gene.cs" />
+    <Compile Include="GA\Interfaces\ICrossible.cs" />
+    <Compile Include="GA\Individual.cs" />
+    <Compile Include="GA\Interfaces\ISelectable.cs" />
+    <Compile Include="GA\Population.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Сrossover.cs" />
+    <Compile Include="GA\Concrete\RouletteWheelSelection.cs" />
+    <Compile Include="GA\Concrete\OnePointСrossover.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
