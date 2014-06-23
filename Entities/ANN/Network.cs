@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace Entities.ANN
 {
     public class Network
@@ -12,6 +13,7 @@ namespace Entities.ANN
         public int InnerLayerCount { get; private set; }
         public int Solution { get; set; }
         private Random rand = new Random();
+        private const int INPUTS_COUNT = 4;
 
         public Network(int innerNeuronCount, int innerLayerCount)
         {
@@ -20,13 +22,17 @@ namespace Entities.ANN
             CreateNet();
         }
 
-        public void CreateNet()
+        private void CreateNet()
         {
 
             #region Формирование входного слоя
 
-            /*Три входных нейрона: Х, У, сторона пришедшей трубы*/
+            /*  4 входных нейрона: Сигналы препятствий с 4х сторон
+             *  Один нейрон получает специализацию, 
+             *  как отвечающий за сторону откуда пришла труба
+             */
             var inputNeurons = new List<Neuron>() { 
+                new Neuron(), 
                 new Neuron(), 
                 new Neuron(), 
                 new Neuron()
@@ -77,7 +83,8 @@ namespace Entities.ANN
                 {
                     foreach (var neuron2 in Layers[i + 1].Neurons)
                     {
-                        Link link = new Link((-0.1 + rand.Next(21)/100), neuron1, neuron2);
+                        double nextWeight = -0.1 + ((double) rand.Next(21))/100;
+                        Link link = new Link(nextWeight, neuron1, neuron2);
                         neuron1.OutputLinks.Add(link);
                         neuron2.InputLinks.Add(link);
                     }
@@ -90,8 +97,8 @@ namespace Entities.ANN
 
         public void FindResult(List<int> inputs)
         {
-            if (inputs.Count != 3) 
-                throw new ArgumentOutOfRangeException("В передаваемом списке должно быть три значения");
+            if (inputs.Count != INPUTS_COUNT)
+                throw new ArgumentOutOfRangeException("В передаваемом списке должно быть "+INPUTS_COUNT+" значения");
 
             Layer inputLayer = Layers[0];
             List<Neuron> inputNeurons = inputLayer.Neurons;
@@ -105,7 +112,7 @@ namespace Entities.ANN
 
         private void Activate()
         {
-            for (int i = 0; i < Layers.Count; i++)
+            for (int i = 1; i < Layers.Count; i++)
             {
                 var layer = Layers[i];
                 foreach (var neuron in layer.Neurons)
@@ -135,7 +142,25 @@ namespace Entities.ANN
             throw new NotImplementedException();
         }
 
-        public String DisplayResult()
+        public void Print()
+        {
+            int num = 0;
+            foreach (var layer in Layers)
+            {
+                Console.Out.WriteLine();
+                num += 1;
+                Console.Out.WriteLine("Слой " + num + ":  " + layer.ToString());
+                double[] mas = layer.GetOutputWeightsArray();
+                int count = mas.Count();
+                for (int i = 0; i < count; i++)
+                {
+                    Console.Out.Write(mas[i].ToString() + " ");
+                }
+                Console.Out.WriteLine();
+            }
+        }
+
+        public String SolutionToString()
         {
             /* Символы для трубы
              * { "007С |", "2014 -", "2308 Г", "2309 верз прав угол", "230A ниж лев", "230B ниж прав" };

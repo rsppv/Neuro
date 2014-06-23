@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Entities.ANN
 {
@@ -20,12 +18,14 @@ namespace Entities.ANN
 
         public Neuron()
         {
-            Threshold = 1;
+            Threshold = 0;
             Shift = 0;
             Value = 0;
             Error = 0;
             WeightedSum = 0;
             FactorA = 1;
+            InputLinks = new List<Link>();
+            OutputLinks = new List<Link>();
         }
 
         private double LogSigmoidFunc(double factorA, double weightedSum)
@@ -35,9 +35,8 @@ namespace Entities.ANN
 
         private int StepFunc(double threshold, double weightedSum)
         {
-            if ((threshold == null) || (weightedSum == null)) 
-                throw new ArgumentNullException();
-
+            /* BUG Пороговая ф-ия округляет до нуля. Возможно стоит попробовать сделать лог сигмоидную, а для выходного слоя пороговую*/
+ 
             return weightedSum < threshold ? 0 : 1;
         }
 
@@ -64,6 +63,30 @@ namespace Entities.ANN
             Value = StepFunc(Threshold, WeightedSum);
         }
 
+        public List<double> GetInputWeights()
+        {
+            return InputLinks.Select(link => link.Weight).ToList();
+        }
+
+        public List<double> GetOutputWeights()
+        {
+            return OutputLinks.Select(link => link.Weight).ToList();
+        }
+
+        public double[] GetInputWeightsArray()
+        {
+            return GetInputWeights().ToArray();
+        }
+
+        public double[] GetOutputWeightsArray()
+        {
+            return GetOutputWeights().ToArray();
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
 
     }
 }
