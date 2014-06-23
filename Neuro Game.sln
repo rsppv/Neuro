@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{D25CB06B-C19B-4D03-8F1D-F5714CE218C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroPlumber", "NeuroPlumber\NeuroPlumber.csproj", "{2E7C9267-B936-405E-A5B8-600A501BFD5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D25CB06B-C19B-4D03-8F1D-F5714CE218C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D25CB06B-C19B-4D03-8F1D-F5714CE218C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D25CB06B-C19B-4D03-8F1D-F5714CE218C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E7C9267-B936-405E-A5B8-600A501BFD5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E7C9267-B936-405E-A5B8-600A501BFD5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E7C9267-B936-405E-A5B8-600A501BFD5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E7C9267-B936-405E-A5B8-600A501BFD5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
