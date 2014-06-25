@@ -17,11 +17,11 @@ namespace Entities.GA.Concrete
             Cutoff = cutoff;
         }
 
-        public List<Individual> SelectedIndividuals { get; private set; }
+        public List<IIndividual> SelectedIndividuals { get; private set; }
 
-        public List<Individual> Select(Population population)
+        public List<IIndividual> Select(Population population)
         {
-            return population.Individuals.GetRange(0, (int) (population.Size*Cutoff));
+            return population.Individuals.GetRange(0, (int) (population.IndividualCount*Cutoff));
         }
     }
 }

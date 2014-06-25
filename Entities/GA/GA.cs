@@ -8,28 +8,14 @@ namespace Entities.GA
 {
     public class Ga
     {
-
-        #region Инициализация Готового решения
-        //private readonly Gene[,] correctGenes = new Gene[4,8] {  { new Gene(1,1), new Gene(2,1), new Gene(1,2), new Gene(2,2), new Gene(1,1), new Gene(2,1), new Gene(1,2), new Gene(2,2) },
-        //                                                { new Gene(1,1), new Gene(2,3), new Gene(2,2), new Gene(1,1), new Gene(1,1), new Gene(2,1), new Gene(1,2), new Gene(2,2) },
-        //                                                { new Gene(2,3), new Gene(1,2), new Gene(2,4), new Gene(1,1), new Gene(1,1), new Gene(2,1), new Gene(2,1), new Gene(2,2) },
-        //                                                { new Gene(1,1), new Gene(2,1), new Gene(1,2), new Gene(2,3), new Gene(1,2), new Gene(1,2), new Gene(2,4), new Gene(1,1) } };
-
-        //public Individual solution = new Individual(new Gene[4,8]
-        //{  
-        //    { new Gene(1,1), new Gene(2,1), new Gene(1,2), new Gene(2,2), new Gene(1,1), new Gene(2,1), new Gene(1,2), new Gene(2,2) },
-        //    { new Gene(1,1), new Gene(2,3), new Gene(2,2), new Gene(1,1), new Gene(1,1), new Gene(2,1), new Gene(1,2), new Gene(2,2) },
-        //    { new Gene(2,3), new Gene(1,2), new Gene(2,4), new Gene(1,1), new Gene(1,1), new Gene(2,1), new Gene(2,1), new Gene(2,2) },
-        //    { new Gene(1,1), new Gene(2,1), new Gene(1,2), new Gene(2,3), new Gene(1,2), new Gene(1,2), new Gene(2,4), new Gene(1,1) } 
-        //});
-        #endregion
-
         public int GenerationNumber { get; private set; }
         public int PopulationSize { get; private set; }
         public double CrossRate { get; private set; }
         public double MutationRate { get; private set; }
         public ICrossible Crossover { get; private set; }
         public ISelectable Selection { get; private set; }
+        public Population Population { get; set; }
+ 
 
 
         public Ga(int generationNumber, int populationSize, double crossRate, double mutationRate, ICrossible crossover, ISelectable selection)
@@ -45,23 +31,24 @@ namespace Entities.GA
             GenerationNumber = generationNumber;
             Crossover = crossover;
             Selection = selection;
+            Population = new Population(PopulationSize);
         }
+
 
         public void Start()
         {
             
             #region Формирование начальной популяции
 
-            var pop = new Population(PopulationSize);
-            pop.FillPopulation(); // Запоним рандомными значениями
+            
+            Population.FillPopulation(); // Запоним рандомными значениями
 
             #endregion
 
             int currentGeneration = 0;
             int fitness = 1;
-            var selectedIndividuals = new List<Individual>();
+            var selectedIndividuals = new List<IIndividual>();
             //var childPop = new Population(PopulationSize);
-            var comparer = new IndividualComparer();
             Random rand = new Random();
 
             while (currentGeneration < GenerationNumber || fitness != 0)
@@ -72,40 +59,40 @@ namespace Entities.GA
  
                 #region Оценивание популяции
 
-                foreach (var individual in pop.Individuals)
+                foreach (var individual in Population.Individuals)
                 {
                     individual.CalcFitness();
                 }
 
-                pop.Individuals.Sort(comparer);
-                fitness = pop.Individuals.First().Fitness;
+                Population.Individuals.Sort();
+                fitness = Population.Individuals.First().Fitness;
 
                 #endregion
 
 
                 #region Селекция
 
-                selectedIndividuals = Selection.Select(pop);
+                selectedIndividuals = Selection.Select(Population);
 
                 #endregion
 
 
                 #region Скрещивание
-                pop.Individuals.Clear();
-                while (pop.Size < PopulationSize)
+                Population.Individuals.Clear();
+                while (Population.IndividualCount < PopulationSize)
                 {
                     var parent1 = selectedIndividuals[rand.Next(1, selectedIndividuals.Count + 1)];
                     var parent2 = selectedIndividuals[rand.Next(1, selectedIndividuals.Count + 1)];
                     if (rand.NextDouble() < CrossRate)
                     {
-                        var childs = Crossover.Cross(parent1, parent2);
-                        pop.Add(childs[0]);
-                        pop.Add(childs[1]);
+                        Crossover.Cross(parent1, parent2);
+                        Population.Add(Crossover.Child1);
+                        Population.Add(Crossover.Child2);
                     }
                     else
                     {
-                        pop.Add(parent1);
-                        pop.Add(parent2);
+                        Population.Add(parent1);
+                        Population.Add(parent2);
                     }
                 }
 
@@ -114,13 +101,13 @@ namespace Entities.GA
 
                 #region Мутация
 
-                foreach (var ind in pop.Individuals)
+                foreach (var ind in Population.Individuals)
                 {
-                    foreach (var gene in ind.Genes)
+                    for (int i = 0; i < ind.Genes.Count; i++)
                     {
                         if (rand.NextDouble() < MutationRate)
                         {
-                            gene.Mutate();
+                            ind.Mutate(i);
                         }
                     }
                 }
@@ -138,6 +125,12 @@ namespace Entities.GA
 
 
 
+        }
+
+        public IIndividual GetBest()
+        {
+            Population.Individuals.Sort();
+            return Population.Individuals.First();
         }
 
     }

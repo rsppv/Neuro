@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Entities.ANN;
+using Entities.GA;
 
 namespace Entities.Game
 {
-    public class GameEnvironment
+    public class GameEnvironment : IIndividual
     {
         private const int EMPTY = -1;
         public int Width { get; private set; }
@@ -14,11 +16,33 @@ namespace Entities.Game
 
         private Cell[,] _field;
         public Cell NextCell { get; private set; }
-
-        public GameEnvironment(int width, int height)
+        public int Fitness { get; set; }
+        public Network Net { get; set; }
+        public List<double> Genes { get; set; }
+            
+        Random rand = new Random();
+       
+        
+        public void CalcFitness()
         {
-            Height = height;
-            Width = width;
+            PipeLength = FinalPipes.Count;
+            Fitness = PipeLength;
+        }
+
+        public void Mutate(int geneNumber)
+        {
+            //Genes[geneNumber] += (rand.NextDouble() - 0.5);
+            Genes[geneNumber] = 5;
+            Net.SetWeights(Genes);
+        }
+
+        public GameEnvironment()
+        {
+            Height = 10;
+            Width = 10;
+            Net = new Network(5, 1);
+            Genes = Net.GetWeights();
+            Fitness = 0;
             InitField();
         }
 
@@ -92,48 +116,6 @@ namespace Entities.Game
             return obstacles;
         }
 
-        //public Cell checkFreeCells(Cell cell)
-        //{
-        //    /* TODO доделать. Алгоритм следующий:
-        //     * Передаю в функцию клетку, 
-        //     * ф-я возвращает в зависимости от Value две клетки которые рядом с концами
-        //     * Проверяю эти клетки. Та, которая свободная и будет следующая.
-        //     * Перед этой функцией проверить на IsCompatible и если совместимы то выбирать уже следующую клетку. 
-        //     * Если не совместимы то break()
-        //    */
-        //    Cell end1;
-        //    Cell end2;
-
-        //    switch (cell.Value)
-        //    {
-        //        case EMPTY:
-
-        //        case 0:
-        //            end1 = GetCell(cell.Row - 1, cell.Col);
-        //            end2 = GetCell(cell.Row + 1, cell.Col);
-        //            break;
-        //        case 1:
-        //            end1 = GetCell(cell.Row, cell.Col - 1);
-        //            end2 = GetCell(cell.Row, cell.Col + 1);
-        //            break;
-        //        case 2:
-        //            end1 = GetCell(cell.Row + 1, cell.Col);
-        //            end2 = GetCell(cell.Row, cell.Col + 1);
-        //            break;
-        //        case 3:
-        //            end1 = GetCell(cell.Row, cell.Col-1);
-        //            end2 = GetCell(cell.Row + 1, cell.Col);
-        //            break;
-        //        case 4:
-        //            end1 = GetCell(cell.Row - 1, cell.Col);
-        //            end2 = GetCell(cell.Row, cell.Col+1);
-        //            break;
-        //        case 5:
-        //            end1 = GetCell(cell.Row - 1, cell.Col);
-        //            end2 = GetCell(cell.Row, cell.Col-1);
-        //            break;
-        //    }
-        //}
 
         public void SetCellValue(int row, int col, int value)
         {
@@ -166,7 +148,7 @@ namespace Entities.Game
                 FinalPipes.Add(_field[row, col]);
             }
             
-            PipeLength = FinalPipes.Count;
+            CalcFitness();
         }
 
         public bool CheckNextCell()
@@ -829,5 +811,31 @@ namespace Entities.Game
             }
         }
 
+        public void PrintGenes()
+        {
+            Console.Out.WriteLine();
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("Гены:");
+            Console.Out.WriteLine(); 
+            Console.Out.WriteLine();
+            foreach (var gene in Genes)
+            {
+                Console.Out.Write(gene+"    ");
+            }
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+            {
+                return -1;
+            }
+            IIndividual otherIndividual = obj as GameEnvironment; 
+            if (otherIndividual != null)
+            {
+                return otherIndividual.Fitness.CompareTo(this.Fitness);
+            }
+            throw new ArgumentException("Объект не GameEnvironment");
+        }
     }
 }

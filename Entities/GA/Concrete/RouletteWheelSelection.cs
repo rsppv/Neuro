@@ -7,7 +7,7 @@ namespace Entities.GA.Concrete
 {
     public class RouletteWheelSelection : ISelectable
     {
-        public List<Individual> SelectedIndividuals { get; private set; }
+        public List<IIndividual> SelectedIndividuals { get; private set; }
 
         public int ListSize { get; private set; }
 
@@ -19,7 +19,7 @@ namespace Entities.GA.Concrete
             ListSize = listSize;
         }
 
-        public List<Individual> Select(Population population)
+        public List<IIndividual> Select(Population population)
         {
             int sumFitness = population.Individuals.Sum(ind => ind.Fitness);
             var rand = new Random();

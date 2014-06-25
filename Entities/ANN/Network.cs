@@ -139,6 +139,24 @@ namespace Entities.ANN
             return GetWeights().ToArray();
         }
 
+        public void SetWeights(List<double> weights)
+        {
+            int l = 0;
+            for (int i = 1; i < Layers.Count; i++)
+            {
+                var layer = Layers[i];
+                for (int j = 0; j < layer.Neurons.Count; j++)
+                {
+                    var neuron = layer.Neurons[j];
+                    for (int k = 0; k < neuron.InputLinks.Count; k++)
+                    {
+                        neuron.InputLinks[k].Weight = weights[l];
+                        l++;
+                    }
+                }
+            }
+        }
+
         public void SetWeights(double[] weights)
         {
             int l = 0;
@@ -146,7 +164,7 @@ namespace Entities.ANN
             {
                 foreach (var neuron in layer.Neurons)
                 {
-                    foreach (Link link in neuron.OutputLinks)
+                    foreach (Link link in neuron.InputLinks)
                     {
                         link.Weight = weights[l];
                         l++;

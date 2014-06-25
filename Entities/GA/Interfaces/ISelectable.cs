@@ -4,6 +4,6 @@ namespace Entities.GA.Interfaces
 {
     public interface ISelectable
     {
-        List<Individual> Select(Population population);
+        List<IIndividual> Select(Population population);
     }
 }

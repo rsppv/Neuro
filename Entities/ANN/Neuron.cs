@@ -23,7 +23,7 @@ namespace Entities.ANN
             Value = 0;
             Error = 0;
             WeightedSum = 0;
-            FactorA = 1;
+            FactorA = 0.5;
             InputLinks = new List<Link>();
             OutputLinks = new List<Link>();
         }

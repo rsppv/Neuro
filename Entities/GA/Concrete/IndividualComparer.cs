@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entities.GA.Concrete
 {
-    public sealed class IndividualComparer : IComparer<Individual>
+    public sealed class IndividualComparer : IComparer<IIndividual>
     {
-        public int Compare(Individual x, Individual y)
+        public int Compare(IIndividual x, IIndividual y)
         {
             if (x == null)
             {
