@@ -59,5 +59,15 @@ namespace Entities.ANN
         {
             return GetOutputWeights().ToArray();
         }
+
+        public List<double> GetValues()
+        {
+            List<double> list = new List<double>();
+            foreach (var neuron in Neurons)
+            {
+                list.Add(neuron.Value);
+            }
+            return list;
+        }
     }
 }

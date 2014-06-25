@@ -8,7 +8,7 @@ namespace Entities.ANN
     public class Neuron
     {
         public double Shift { get; private set; }
-        public int Value { get; set; }
+        public double Value { get; set; }
         public double Error { get; private set; }
         public double WeightedSum { get; private set; }
         public double FactorA { get; private set; }
@@ -35,12 +35,10 @@ namespace Entities.ANN
 
         private int StepFunc(double threshold, double weightedSum)
         {
-            /* BUG Пороговая ф-ия округляет до нуля. Возможно стоит попробовать сделать лог сигмоидную, а для выходного слоя пороговую*/
- 
             return weightedSum < threshold ? 0 : 1;
         }
 
-        public void ErrorOutputLayer(double desiredOutput)
+        public void ErrorOutputLayer(double desiredOutput) 
         {
             Error = FactorA*Value*(1 - Value)*(Value - desiredOutput);
         }
@@ -59,8 +57,8 @@ namespace Entities.ANN
                 WeightedSum += link.Weight * link.SourceNeuron.Value;
             }
             //Лог сигмоидная : надо до целых округлять
-            //Value = LogSigmoidFunc(FactorA, WeightedSum);
-            Value = StepFunc(Threshold, WeightedSum);
+            Value = LogSigmoidFunc(FactorA, WeightedSum);
+            //Value = StepFunc(Threshold, WeightedSum);
         }
 
         public List<double> GetInputWeights()

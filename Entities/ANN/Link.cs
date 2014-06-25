@@ -2,7 +2,7 @@
 {
     public class Link
     {
-        public double Weight { get; private set; }
+        public double Weight { get; set; }
         public Neuron SourceNeuron { get; private set; }
         public Neuron EndNeuron { get; private set; }
 

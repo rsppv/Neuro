@@ -104,10 +104,12 @@ namespace Entities.ANN
             List<Neuron> inputNeurons = inputLayer.Neurons;
             for (int i = 0; i < inputs.Count; i++)
             {
-                inputNeurons[i].Value = inputs[i];
+                inputNeurons[i].Value = (double) inputs[i];
             }
             Activate();
-            Solution = Layers.Last().Neurons.FindIndex(n => n.Value == 1);
+            List<double> list = Layers.Last().GetValues();
+            double maxOutput = list.Max();
+            Solution = list.IndexOf(maxOutput);
         }
 
         private void Activate()
@@ -118,6 +120,37 @@ namespace Entities.ANN
                 foreach (var neuron in layer.Neurons)
                 {
                     neuron.Activate();
+                }
+            }
+        }
+
+        public List<double> GetWeights()
+        {
+            var list = new List<double>();
+            foreach (var layer in Layers)
+            {
+                list.AddRange(layer.GetInputWeights()); 
+            }
+            return list;
+        }
+
+        public double[] GetWeightsArray()
+        {
+            return GetWeights().ToArray();
+        }
+
+        public void SetWeights(double[] weights)
+        {
+            int l = 0;
+            foreach (var layer in Layers)
+            {
+                foreach (var neuron in layer.Neurons)
+                {
+                    foreach (Link link in neuron.OutputLinks)
+                    {
+                        link.Weight = weights[l];
+                        l++;
+                    }
                 }
             }
         }
@@ -139,6 +172,7 @@ namespace Entities.ANN
 
         public static Network RandomNetwork()
         {
+            //Если время останется
             throw new NotImplementedException();
         }
 
@@ -157,31 +191,6 @@ namespace Entities.ANN
                     Console.Out.Write(mas[i].ToString() + " ");
                 }
                 Console.Out.WriteLine();
-            }
-        }
-
-        public String SolutionToString()
-        {
-            /* Символы для трубы
-             * { "007С |", "2014 -", "2308 Г", "2309 верз прав угол", "230A ниж лев", "230B ниж прав" };
-             * Консоль не выводит эти символы почему то
-             */
-            switch (Solution)
-            {
-                case 0:
-                    return "!";
-                case 1:
-                    return "—";
-                case 2:
-                    return "Г";
-                case 3:
-                    return "7";
-                case 4:
-                    return "L";
-                case 5:
-                    return "j";
-                default:
-                    return "";
             }
         }
     }

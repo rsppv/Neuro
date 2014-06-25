@@ -46,7 +46,8 @@
     <Compile Include="Game\Agent.cs" />
     <Compile Include="Game\AgentEnvironment.cs" />
     <Compile Include="Game\AgentEnvironmentObserver.cs" />
-    <Compile Include="Game\Directions.cs" />
+    <Compile Include="Game\Cell.cs" />
+    <Compile Include="Game\GameEnvironment.cs" />
     <Compile Include="Game\IAgent.cs" />
     <Compile Include="Game\IObserver.cs" />
     <Compile Include="Game\NeuralNetworkDrivenAgent.cs" />
