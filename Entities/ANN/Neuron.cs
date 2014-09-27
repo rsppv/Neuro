@@ -18,7 +18,7 @@ namespace Entities.ANN
 
         public Neuron()
         {
-            Threshold = 0;
+            Threshold = 0.9;
             Shift = 0;
             Value = 0;
             Error = 0;

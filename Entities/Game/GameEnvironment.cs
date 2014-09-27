@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Entities.ANN;
 using Entities.GA;
@@ -9,8 +10,10 @@ namespace Entities.Game
     public class GameEnvironment : IIndividual
     {
         private const int EMPTY = -1;
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public static int Width;
+        public static int Height;
+        public static int HiddenLayerCount;
+        public static int HiddenNeuronCount;
         public int PipeLength { get; private set; }
         public List<Cell> FinalPipes { get; set; }
 
@@ -21,8 +24,9 @@ namespace Entities.Game
         public List<double> Genes { get; set; }
             
         Random rand = new Random();
-       
-        
+
+
+
         public void CalcFitness()
         {
             PipeLength = FinalPipes.Count;
@@ -31,19 +35,24 @@ namespace Entities.Game
 
         public void Mutate(int geneNumber)
         {
-            //Genes[geneNumber] += (rand.NextDouble() - 0.5);
-            Genes[geneNumber] = 5;
+            Genes[geneNumber] += ( (double)rand.Next(2001) / 1000 - 1);
             Net.SetWeights(Genes);
         }
 
         public GameEnvironment()
         {
-            Height = 10;
-            Width = 10;
-            Net = new Network(5, 1);
+            Net = new Network(HiddenNeuronCount, HiddenLayerCount);
             Genes = Net.GetWeights();
             Fitness = 0;
             InitField();
+        }
+
+        public static void Initialize(int height, int width, int hiddenLayerCount, int hiddenNeuronCount)
+        {
+            Height = height;
+            Width = width;
+            HiddenLayerCount = hiddenLayerCount;
+            HiddenNeuronCount = hiddenNeuronCount;
         }
 
         private void InitField()
@@ -760,7 +769,7 @@ namespace Entities.Game
             return false;
         }
 
-        private string CodeToSymbol(int code)
+        public string CodeToSymbol(int code)
         {
             /* Символы для трубы
      * { "007С |", "2014 -", "2308 Г", "2309 верз прав угол", "230A ниж лев", "230B ниж прав" };
@@ -809,13 +818,14 @@ namespace Entities.Game
                 }
                 Console.Out.WriteLine();
             }
+            Console.Out.WriteLine();
         }
 
         public void PrintGenes()
         {
             Console.Out.WriteLine();
             Console.Out.WriteLine();
-            Console.Out.WriteLine("Гены:");
+            Console.Out.WriteLine("Гены (Веса):");
             Console.Out.WriteLine(); 
             Console.Out.WriteLine();
             foreach (var gene in Genes)

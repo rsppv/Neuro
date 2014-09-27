@@ -21,7 +21,7 @@ namespace Entities.GA.Concrete
 
         public List<IIndividual> Select(Population population)
         {
-            return population.Individuals.GetRange(0, (int) (population.IndividualCount*Cutoff));
+            return population.Individuals.GetRange(0, (int) (population.Individuals.Count*Cutoff));
         }
     }
 }

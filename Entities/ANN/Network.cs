@@ -83,7 +83,7 @@ namespace Entities.ANN
                 {
                     foreach (var neuron2 in Layers[i + 1].Neurons)
                     {
-                        double nextWeight = -0.1 + ((double) rand.Next(21))/100;
+                        double nextWeight = -0.1 + ((double) rand.Next(201))/1000;
                         Link link = new Link(nextWeight, neuron1, neuron2);
                         neuron1.OutputLinks.Add(link);
                         neuron2.InputLinks.Add(link);
@@ -201,12 +201,14 @@ namespace Entities.ANN
             {
                 Console.Out.WriteLine();
                 num += 1;
-                Console.Out.WriteLine("Слой " + num + ":  " + layer.ToString());
+                Console.Out.WriteLine("Слой " + num + ":");
+                Console.Out.WriteLine(layer.ToString());
                 double[] mas = layer.GetOutputWeightsArray();
                 int count = mas.Count();
                 for (int i = 0; i < count; i++)
                 {
-                    Console.Out.Write(mas[i].ToString() + " ");
+                    if (i % 5 == 0) Console.Out.WriteLine();
+                    Console.Out.Write(" "+mas[i].ToString() + " ");
                 }
                 Console.Out.WriteLine();
             }

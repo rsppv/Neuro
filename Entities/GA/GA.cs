@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Entities.GA.Concrete;
 using Entities.GA.Interfaces;
+using Entities.Game;
 
 namespace Entities.GA
 {
@@ -15,6 +16,7 @@ namespace Entities.GA
         public ICrossible Crossover { get; private set; }
         public ISelectable Selection { get; private set; }
         public Population Population { get; set; }
+        public List<IIndividual> bests { get; set; } 
  
 
 
@@ -32,6 +34,7 @@ namespace Entities.GA
             Crossover = crossover;
             Selection = selection;
             Population = new Population(PopulationSize);
+            bests = new List<IIndividual>();
         }
 
 
@@ -40,22 +43,22 @@ namespace Entities.GA
             
             #region Формирование начальной популяции
 
-            
             Population.FillPopulation(); // Запоним рандомными значениями
 
             #endregion
 
             int currentGeneration = 0;
-            int fitness = 1;
+
             var selectedIndividuals = new List<IIndividual>();
             //var childPop = new Population(PopulationSize);
             Random rand = new Random();
 
-            while (currentGeneration < GenerationNumber || fitness != 0)
+            while (currentGeneration < GenerationNumber)
             {
                 #region Поколение
 
                 currentGeneration += 1;
+                RunSimulation();
  
                 #region Оценивание популяции
 
@@ -65,7 +68,8 @@ namespace Entities.GA
                 }
 
                 Population.Individuals.Sort();
-                fitness = Population.Individuals.First().Fitness;
+                PrintGeneration(currentGeneration);
+                //fitness = Population.Individuals.First().Fitness;
 
                 #endregion
 
@@ -79,10 +83,10 @@ namespace Entities.GA
 
                 #region Скрещивание
                 Population.Individuals.Clear();
-                while (Population.IndividualCount < PopulationSize)
+                while (Population.Individuals.Count < PopulationSize)
                 {
-                    var parent1 = selectedIndividuals[rand.Next(1, selectedIndividuals.Count + 1)];
-                    var parent2 = selectedIndividuals[rand.Next(1, selectedIndividuals.Count + 1)];
+                    var parent1 = selectedIndividuals[rand.Next(0, selectedIndividuals.Count)];
+                    var parent2 = selectedIndividuals[rand.Next(0, selectedIndividuals.Count)];
                     if (rand.NextDouble() < CrossRate)
                     {
                         Crossover.Cross(parent1, parent2);
@@ -121,16 +125,38 @@ namespace Entities.GA
 
                 #endregion
             }
+            PrintGeneration(currentGeneration);
+        }
 
-
-
-
+        private void RunSimulation()
+        {
+            foreach (GameEnvironment individual in Population.Individuals)
+            {
+                List<int> inputs = new List<int>(4);
+                while (individual.CheckNextCell())
+                {
+                    inputs = individual.GetObstacles(individual.NextCell.Row, individual.NextCell.Col);
+                    individual.Net.FindResult(inputs);
+                    individual.SetCellValue(individual.NextCell.Row, individual.NextCell.Col, individual.Net.Solution);
+                }
+            }
         }
 
         public IIndividual GetBest()
         {
             Population.Individuals.Sort();
             return Population.Individuals.First();
+        }
+
+        private void PrintGeneration(int generation)
+        {
+            var best = (GameEnvironment) GetBest();
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("Поколение "+generation);
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("Лучший результат : "+best.Fitness);
+            Console.Out.WriteLine();
+            best.Print();
         }
 
     }
